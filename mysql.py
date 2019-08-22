@@ -1,4 +1,5 @@
 import os
+import requests
 
 from flask import Flask, jsonify, request, render_template
 from flask_sqlalchemy import SQLAlchemy
@@ -15,6 +16,7 @@ class Activity(db.Model):
     id = db.Column(db.Integer, unique=True, nullable=False, primary_key=True)
     num_likes = db.Column(db.Integer, nullable=False)
     comments = db.relationship('Comment', backref='activity', lazy=True)
+    gh_event_id = db.Column(db.Integer, nullable=False)
 
     def __repr__(self):
         return "<num_likes: {}>".format(self.num_likes)
@@ -27,14 +29,28 @@ class Comment(db.Model):
 
 @app.route("/", methods=["GET", "POST"])
 def index():
-    if request.form:
+    if request.form: # POST REQUEST
         print(request.form)
         activity = Activity(num_likes=request.form.get("num_likes"))
         db.session.add(activity)
         db.session.commit()
-    activities = Activity.query.all()
-    print(activities)
-    return render_template("home.html", activities=activities)
+
+    url = 'https://api.github.com/users/clairelin135/events'
+    headers = {"Content-Type" : "application/vnd.github.v3+json"}
+
+    events = requests.get(url, headers=headers).json()
+    for event in events:
+        activity = Activity.query.filter_by(gh_event_id=event["id"]).first()
+
+        if activity:
+            num_likes = activity.num_likes
+            comments = [dict(a.items()) for a in activity.comments]
+            print(num_likes)
+            print(comments)
+        print(event)
+
+    #activities = Activity.query.all()
+    return render_template("home.html", events=events)
 
 if __name__ == '__main__':
     app.run(debug=True)

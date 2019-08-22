@@ -7,8 +7,10 @@
     </form>
 
     <h1>Activities</h1>
-    {% for activity in activities %}
-      <p>{{activity.num_likes}}</p>
+    {% for e in events %}
+      <p>{{e.id}}</p>
+      <p>{{e.created_at}}</p>
+      <p>{{e.repo.url}}</p>
     {% endfor %}
   </body>
 </html>
