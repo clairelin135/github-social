@@ -10,8 +10,8 @@ from templates import db
 @app.route('/')
 @app.route('/hello')
 def index():
-    #return render_template("home.html")
-    return "hello"
+    return render_template("index.html")
+    #return "hello"
 
 @app.route("/lel", methods=["GET", "POST"])
 def lel():
