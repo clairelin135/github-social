@@ -3,18 +3,18 @@ import requests
 from templates import app
 from flask import render_template, request
 
-#from templates.__init__ import Activity
-from templates import Activity
-from templates import db
+from templates import Activity, db
 
 @app.route('/')
-@app.route('/hello')
-def index():
-    return render_template("index.html")
-    #return "hello"
+def home():
+    return render_template("home.html")
 
-@app.route("/lel", methods=["GET", "POST"])
-def lel():
+@app.route('/users/<id>')
+def user(id):
+    return render_template("home.html")
+
+@app.route("/api/user/:id", methods=["GET", "POST"])
+def user_events():
     if request.form: # POST REQUEST
         print(request.form)
         activity = Activity(num_likes=request.form.get("num_likes"))
@@ -37,4 +37,5 @@ def lel():
 
     #activities = Activity.query.all()
     #return render_template("../home.html", events=events)
-    return str(events)
+    return jsonify(events)
+    #return render_template("index.html", events=events)
