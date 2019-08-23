@@ -1,2 +1,2 @@
-# ReactJS, MySQL, Flask Todo List
-A todo list sample application with MySQL, ReactJS, Flask
+# GitHub Social
+Platform to like and comment on user events.
