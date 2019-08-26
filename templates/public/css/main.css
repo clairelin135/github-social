@@ -10,7 +10,46 @@ body {
  margin: 0;
  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
 }
+
 h1, h2, h3, h4, h5, h6, p, ul {
  margin: 0;
  padding: 0;
+}
+
+.profile-image {
+  height: 50px;
+  width: 50px;
+}
+
+.flexrow {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.flexcol {
+  display: flex;
+  flex-direction: column;
+}
+
+.flex-start {
+  justify-content: flex-start;
+}
+
+.space-between {
+  justify-content: space-between;
+  display: flex;
+  flex-direction: row;
+}
+
+.button {
+  cursor: pointer;
+}
+
+.code {
+  font-family: 'Inconsolata', monospace;
+}
+
+.event-header {
+  flex: 1;
 }

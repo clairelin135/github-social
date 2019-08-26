@@ -1,7 +1,7 @@
 import requests
 
 from templates import app
-from flask import render_template, request
+from flask import render_template, request, jsonify
 
 from templates import Activity, db
 
@@ -9,23 +9,31 @@ from templates import Activity, db
 def home():
     return render_template("home.html")
 
-@app.route('/users/<id>')
+@app.route('/user/<id>')
 def user(id):
     return render_template("home.html")
 
-@app.route("/api/user/:id", methods=["GET", "POST"])
-def user_events():
+@app.route('/api/user/<username>')
+def api_user(username):
+    url = 'https://api.github.com/users/%s' % username
+    headers = {"Content-Type" : "application/vnd.github.v3+json"}
+
+    return requests.get(url, headers=headers).json()
+
+@app.route('/api/events/<username>', methods=["GET", "POST"])
+def api_events(username):
     if request.form: # POST REQUEST
         print(request.form)
         activity = Activity(num_likes=request.form.get("num_likes"))
         db.session.add(activity)
         db.session.commit()
 
-    url = 'https://api.github.com/users/clairelin135/events'
+    url = 'https://api.github.com/users/%s/events' % username
     headers = {"Content-Type" : "application/vnd.github.v3+json"}
 
     events = requests.get(url, headers=headers).json()
     for event in events:
+        '''
         activity = Activity.query.filter_by(gh_event_id=event["id"]).first()
 
         if activity:
@@ -34,6 +42,7 @@ def user_events():
             print(num_likes)
             print(comments)
         print(event)
+        '''
 
     #activities = Activity.query.all()
     #return render_template("../home.html", events=events)

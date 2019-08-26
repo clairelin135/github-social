@@ -1,15 +1,15 @@
-class RoutesAPI {
-  get works() {
+class Routes {
+  get user() {
     return {
-      index: `/api/works`,
-      create: `/api/works`,
-      show: (id) => `/api/works/${id}`,
-      update: (id) => `/api/works/${id}`,
-      delete: (id) => `/api/works/${id}`,
-      filtered_works: (search_params) => `/api/works/filtered_works/${search_params}`,
-      categories: `/works/categories`,
-      thumbnail: (id) => `api/works/thumbnail/${id}`
+      show: (username) => `/api/user/${username}`,
+    }
+  }
+  get events() {
+    return {
+      user_events: (username) => `/api/events/${username}`,
+      like: (id) => `/api/events/${id}`,
     }
   }
 }
-const routesAPI = new RoutesAPI();
+const RoutesAPI = new Routes();
+export default RoutesAPI;
