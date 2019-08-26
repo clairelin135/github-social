@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import RoutesAPI from '../helpers/routesAPI';
 import axios from 'axios';
+import update from 'immutability-helper';
 
 /**
  * @prop id: Integer representing the user ID
@@ -29,7 +30,6 @@ export default class UserEvents extends Component {
           events: events_response.data,
           componentDidMount: true,
         });
-        console.log(this.state);
       },
       error => {
         console.error(error);
@@ -49,14 +49,21 @@ export default class UserEvents extends Component {
 
   like = (id, i) => {
     const like_route = RoutesAPI.events.like(id);
+    const payload = {
+      num_likes: this.state.events[i].num_likes + 1,
+    }
     axios.put(like_route, payload).then(
       response => {
-        this.setState(prevState => ({
-        events: {
-            ...prevState.events,
-            [prevState.events[i].likes]: prevState.events[i].likes + 1,
-        },
-    }));
+        const newState = update(this.state, {
+          events: {
+            [i]: {
+              num_likes: {
+                $apply: function(x) {return x+1;}
+              }
+            }
+          }
+        });
+        this.setState(newState);
       },
       error => {
         console.error(error);
@@ -70,9 +77,6 @@ export default class UserEvents extends Component {
         <div>Loading</div>
       );
     }
-
-    console.log(this.state);
-
     return (
       <div className="center mw8">
         <div className="fl w-30">
@@ -103,7 +107,7 @@ export default class UserEvents extends Component {
                             </div>
                           </div>
                         </div>
-                        <p>Contributed to <span class="code bg-light-gray pv1 ph2">{event.repo.name}</span></p>
+                        <p>Contributed to <span className="code bg-light-gray pv1 ph2">{event.repo.name}</span></p>
                       </div>
                     </div>
                     <div className="mt3">
@@ -111,7 +115,7 @@ export default class UserEvents extends Component {
                         <div className="button white bg-dark-gray pv1 ph2 br4 mr3" onClick={() => {this.like(event.id, i)}}>
                           <p>{'\u2665'}</p>
                         </div>
-                        <p>Liked by {1} people</p>
+                        <p>Liked by {event.num_likes} people</p>
                       </div>
                     </div>
                   </div>

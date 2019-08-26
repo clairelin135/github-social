@@ -7,7 +7,7 @@ class Routes {
   get events() {
     return {
       user_events: (username) => `/api/events/${username}`,
-      like: (id) => `/api/events/${id}`,
+      like: (id) => `/api/like/${id}`,
     }
   }
 }

@@ -33,18 +33,26 @@ def api_events(username):
 
     events = requests.get(url, headers=headers).json()
     for event in events:
-        '''
         activity = Activity.query.filter_by(gh_event_id=event["id"]).first()
 
         if activity:
             num_likes = activity.num_likes
             comments = [dict(a.items()) for a in activity.comments]
-            print(num_likes)
-            print(comments)
-        print(event)
-        '''
+            event["num_likes"] = num_likes
+        else:
+            event["num_likes"] = 0
 
-    #activities = Activity.query.all()
-    #return render_template("../home.html", events=events)
     return jsonify(events)
-    #return render_template("index.html", events=events)
+
+@app.route('/api/like/<id>', methods=["GET", "PUT"])
+def api_like(id):
+    payload = request.json
+    activity = Activity.query.filter_by(gh_event_id=id).first()
+    if activity:
+        activity.num_likes = payload["num_likes"]
+        db.session.commit()
+    else:
+        activity = Activity(num_likes=payload["num_likes"], gh_event_id=id)
+        db.session.add(activity)
+        db.session.commit()
+    return payload
